@@ -8,13 +8,16 @@ INSERT_ERROR = "An error occurred while creating the store."
 
 
 class Store(Resource):
-    def get(self, name: str):
+
+    @classmethod
+    def get(cls, name: str):
         store = StoreModel.find_by_name(name)
         if store:
             return store.json()
         return {"message": STORE_NOT_FOUND}, 404
 
-    def post(self, name: str):
+    @classmethod
+    def post(cls, name: str):
         if StoreModel.find_by_name(name):
             return (
                 {"message": NAME_ALREADY_EXISTS.format(name)},
@@ -29,7 +32,8 @@ class Store(Resource):
 
         return store.json(), 201
 
-    def delete(self, name: str):
+    @classmethod
+    def delete(cls, name: str):
         store = StoreModel.find_by_name(name)
         if store:
             store.delete_from_db()
@@ -38,5 +42,7 @@ class Store(Resource):
 
 
 class StoreList(Resource):
-    def get(self):
+
+    @classmethod
+    def get(cls):
         return {"stores": [x.json() for x in StoreModel.find_all()]}
